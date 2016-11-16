@@ -3,13 +3,14 @@ cascadingPicker是参考jquery-weui中的cityPicker写成的。支持多层次�
 
 ## 用法
 1.引入依赖
-    * weui.min.css
-    * jquery-weui.min.css
+* weui.min.css
+* jquery-weui.min.css
+* query-weui.min.js
+* cascadingPicker.js  
 
-    *jquery-weui.min.js
-    *cascadingPicker.js
 2.调用
-    $('input').cascadingPicker({
+```javascript
+$('input').cascadingPicker({
         title:"选择板块",
         toolbarCloseText:"关闭",
         data:[{
@@ -95,3 +96,4 @@ cascadingPicker是参考jquery-weui中的cityPicker写成的。支持多层次�
                 }]
             }]
     });
+```
