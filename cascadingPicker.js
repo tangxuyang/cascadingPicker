@@ -85,7 +85,7 @@
                 cssClass: "city-picker",
                 rotateEffect: false, //为了性能
                 formatValue: function(p, values, displayValues) {
-                    return displayValues.join('-');
+                    return params.formatValue && params.formatValue(p,values,displayValues) || displayValues.join('-');
                 },
                 onChange: function(picker, values, displayValues) {
                     for (var i = 0; i < currentDisplayValues.length; i++) {

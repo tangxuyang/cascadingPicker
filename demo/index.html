@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="weui.css"/>
+        <link rel="stylesheet" href="jquery-weui.css"/>
+        <style type="text/css">
+            .weui_mask{
+                z-index:99;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="weui_cells inputs">
+            <div class="weui_cell">
+        <div class="weui_cell_hd"><label class="weui_label">意向板块</label></div>
+    <div class="weui_cell_bd weui_cell_primary down_arrow">
+      <input class="weui_input" type="text" id="select-town" placeholder="请选择">
+      <input type="hidden" id="hd_town" name="town" value="">
+    </div>
+    <div class="weui_cell_ft"></div>    
+  </div>
+    <div class="weui_cell">
+        <div class="weui_cell_hd"><label class="weui_label">班级</label></div>
+        <div class="weui_cell_bd">
+            <input id="class" type="text" class="weui_input" placeholder="请选择"/>
+
+        </div>
+        <div class="weui_cell_ft"></div>
+    </div>
+  </div>
+  </div>
+    </body>
+    <script src="jquery-2.1.4.js"></script>
+    <script src="jquery-weui.js"></script>
+    <script src="../cascadingPicker.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $('#select-town').cascadingPicker({
+                title: "选择意向板块",
+            toolbarCloseText:"关闭",
+            onOpen: function() {
+                var masker = '<div class="weui_mask weui_mask_visible"></div>';
+                $("body").append(masker);
+            },
+            onClose:function(){
+                $('.weui_mask').remove();
+            },
+            onChange:function(picker,values,displayValues){
+                $('#hd_town').val(values);
+            },
+            data: [{
+                text: "北京",
+                id: "0000",
+                nodes: [{
+                    text: "朝阳区",
+                    id: "0002",
+                    nodes:[{
+                        text:"某个地方",
+                        id:"0030",
+                        nodes:[{
+                            text:"地方一",
+                            id:"00301"
+                        },{
+                            text:"地方二",
+                            id:"00302"
+                        }]
+                    }]
+                }]
+            }, {
+                text: "上海",
+                id: "0001",
+                nodes: [{
+                    text: "长宁区",
+                    id: "0011",
+                    nodes:[{
+                        text:"福泉路",
+                        id:"00111",
+                        nodes:[{
+                            text:"携程",
+                            id:"001111"
+                        },{
+                            text:"东航",
+                            id:"001112"
+                        }]
+                    },{
+                        text:"虹桥路",
+                        id:"00112",
+                        nodes:[{
+                            text:"悟空找房",
+                            id:"001121"
+                        },{
+                            text:"地铁站",
+                            id:"001122"
+                        }]
+                    }]
+                }, {
+                    text: "浦东新区",
+                    id: "0012",
+                    nodes:[{
+                        text:"金桥",
+                        id:"00121",
+                        nodes:[{
+                            text:"金桥一",
+                            id:"001211"
+                        },{
+                            text:"金桥二",
+                            id:"001212"
+                        }]
+                    },{
+                        text:"花木",
+                        id:"00122",
+                        nodes:[{
+                            text:"世纪大道",
+                            id:"001221"
+                        },{
+                            text:"火狐",
+                            id:"001222"
+                        }]
+                    }]
+                }, {
+                    text: "闵行区",
+                    id: "0013",
+                    nodes:[{
+                        text:"交大",
+                        id:"00131",
+                        nodes:[{
+                            text:"东川陆",
+                            id:"001311"
+                        }]
+                    }]
+                }]
+            }]
+            });
+
+            $('#class').cascadingPicker({
+                title:"班级",
+                data:[{
+                    id:"1",
+                    text:"一年级",
+                    nodes:[{
+                        id:"11",
+                        text:"一班"
+                    },{
+                        id:"12",
+                        text:"二班"
+                    },{
+                        id:"13",
+                        text:"三班"
+                    },{
+                        id:"14",
+                        text:"四班"
+                    },{
+                        id:"15",
+                        text:"五班"
+                    },{
+                        id:"16",
+                        text:"六班"
+                    }]
+                },{
+                    id:"2",
+                    text:"二年级",
+                    nodes:[{
+                        id:"11",
+                        text:"一班"
+                    },{
+                        id:"12",
+                        text:"二班"
+                    },{
+                        id:"13",
+                        text:"三班"
+                    },{
+                        id:"14",
+                        text:"四班"
+                    },{
+                        id:"15",
+                        text:"五班"
+                    }]
+                },{
+                    id:"3",
+                    text:"三年级",
+                    nodes:[{
+                        id:"11",
+                        text:"一班"
+                    },{
+                        id:"12",
+                        text:"二班"
+                    },{
+                        id:"13",
+                        text:"三班"
+                    },{
+                        id:"14",
+                        text:"四班"
+                    },{
+                        id:"15",
+                        text:"五班"
+                    },{
+                        id:"16",
+                        text:"六班"
+                    }]
+                },{
+                    id:"4",
+                    text:"四年级",
+                    nodes:[{
+                        id:"11",
+                        text:"一班"
+                    },{
+                        id:"12",
+                        text:"二班"
+                    },{
+                        id:"13",
+                        text:"三班"
+                    },{
+                        id:"14",
+                        text:"四班"
+                    },{
+                        id:"15",
+                        text:"五班"
+                    },{
+                        id:"16",
+                        text:"六班"
+                    }]
+                },{
+                    id:"5",
+                    text:"五年级",
+                    nodes:[{
+                        id:"11",
+                        text:"一班"
+                    },{
+                        id:"12",
+                        text:"二班"
+                    },{
+                        id:"13",
+                        text:"三班"
+                    }]
+                }]
+            });
+        });
+    </script>
+</html>
