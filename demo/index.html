@@ -29,6 +29,14 @@
         </div>
         <div class="weui_cell_ft"></div>
     </div>
+    <div class="weui_cell">
+        <div class="weui_cell_hd"><label class="weui_label">远程</label></div>
+        <div class="weui_cell_bd">
+            <input id="remote" type="text" class="weui_input" placeholder="请选择"/>
+
+        </div>
+        <div class="weui_cell_ft"></div>
+    </div>
   </div>
   </div>
     </body>
@@ -39,99 +47,99 @@
         $(function(){
             $('#select-town').cascadingPicker({
                 title: "选择意向板块",
-            toolbarCloseText:"关闭",
-            onOpen: function() {
-                var masker = '<div class="weui_mask weui_mask_visible"></div>';
-                $("body").append(masker);
-            },
-            onClose:function(){
-                $('.weui_mask').remove();
-            },
-            onChange:function(picker,values,displayValues){
-                $('#hd_town').val(values);
-            },
-            data: [{
-                text: "北京",
-                id: "0000",
-                nodes: [{
-                    text: "朝阳区",
-                    id: "0002",
-                    nodes:[{
-                        text:"某个地方",
-                        id:"0030",
+                toolbarCloseText:"关闭",
+                onOpen: function() {
+                    var masker = '<div class="weui_mask weui_mask_visible"></div>';
+                    $("body").append(masker);
+                },
+                onClose:function(){
+                    $('.weui_mask').remove();
+                },
+                onChange:function(picker,values,displayValues){
+                    $('#hd_town').val(values);
+                },
+                data: [{
+                    text: "北京",
+                    id: "0000",
+                    nodes: [{
+                        text: "朝阳区",
+                        id: "0002",
                         nodes:[{
-                            text:"地方一",
-                            id:"00301"
+                            text:"某个地方",
+                            id:"0030",
+                            nodes:[{
+                                text:"地方一",
+                                id:"00301"
+                            },{
+                                text:"地方二",
+                                id:"00302"
+                            }]
+                        }]
+                    }]
+                    }, {
+                    text: "上海",
+                    id: "0001",
+                    nodes: [{
+                        text: "长宁区",
+                        id: "0011",
+                        nodes:[{
+                            text:"福泉路",
+                            id:"00111",
+                            nodes:[{
+                                text:"携程",
+                                id:"001111"
+                            },{
+                                text:"东航",
+                                id:"001112"
+                            }]
                         },{
-                            text:"地方二",
-                            id:"00302"
+                            text:"虹桥路",
+                            id:"00112",
+                            nodes:[{
+                                text:"悟空找房",
+                                id:"001121"
+                            },{
+                                text:"地铁站",
+                                id:"001122"
+                            }]
+                        }]
+                    }, {
+                        text: "浦东新区",
+                        id: "0012",
+                        nodes:[{
+                            text:"金桥",
+                            id:"00121",
+                            nodes:[{
+                                text:"金桥一",
+                                id:"001211"
+                            },{
+                                text:"金桥二",
+                                id:"001212"
+                            }]
+                        },{
+                            text:"花木",
+                            id:"00122",
+                            nodes:[{
+                                text:"世纪大道",
+                                id:"001221"
+                            },{
+                                text:"火狐",
+                                id:"001222"
+                            }]
+                        }]
+                    }, {
+                        text: "闵行区",
+                        id: "0013",
+                        nodes:[{
+                            text:"交大",
+                            id:"00131",
+                            nodes:[{
+                                text:"东川陆",
+                                id:"001311"
+                            }]
                         }]
                     }]
                 }]
-            }, {
-                text: "上海",
-                id: "0001",
-                nodes: [{
-                    text: "长宁区",
-                    id: "0011",
-                    nodes:[{
-                        text:"福泉路",
-                        id:"00111",
-                        nodes:[{
-                            text:"携程",
-                            id:"001111"
-                        },{
-                            text:"东航",
-                            id:"001112"
-                        }]
-                    },{
-                        text:"虹桥路",
-                        id:"00112",
-                        nodes:[{
-                            text:"悟空找房",
-                            id:"001121"
-                        },{
-                            text:"地铁站",
-                            id:"001122"
-                        }]
-                    }]
-                }, {
-                    text: "浦东新区",
-                    id: "0012",
-                    nodes:[{
-                        text:"金桥",
-                        id:"00121",
-                        nodes:[{
-                            text:"金桥一",
-                            id:"001211"
-                        },{
-                            text:"金桥二",
-                            id:"001212"
-                        }]
-                    },{
-                        text:"花木",
-                        id:"00122",
-                        nodes:[{
-                            text:"世纪大道",
-                            id:"001221"
-                        },{
-                            text:"火狐",
-                            id:"001222"
-                        }]
-                    }]
-                }, {
-                    text: "闵行区",
-                    id: "0013",
-                    nodes:[{
-                        text:"交大",
-                        id:"00131",
-                        nodes:[{
-                            text:"东川陆",
-                            id:"001311"
-                        }]
-                    }]
-                }]
-            }]
             });
 
             $('#class').cascadingPicker({
@@ -234,6 +242,37 @@
                         id:"13",
                         text:"三班"
                     }]
+                }]
+            });
+
+            $('#remote').cascadingPicker({
+                title:"远程数据",
+                selects:[{
+                    url:"data.json",
+                    processResults:function(data){
+                        data.unshift({
+                            id:null,
+                            text:"请选择"
+                        });
+                    },
+                    paramNameForNext:"cityId"
+                },{
+                    url:"data.json",
+                    paramNameForNext:"districtId",
+                    processResults:function(data){
+                        data.unshift({
+                            id:null,
+                            text:"请选择"
+                        });
+                    }
+                },{
+                    url:"data.json",                    
+                    processResults:function(data){
+                        data.unshift({
+                            id:null,
+                            text:"请选择"
+                        });
+                    }
                 }]
             });
         });

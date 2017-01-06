@@ -7,6 +7,19 @@
       nodes:[...]
     }]
   }]
+
+  selects:[{    
+    url:null,//查询接口地址
+    //paramName:null,//查询的参数字段
+    paramNameForNext:null,//带给下个select的查询的参数字段
+    selected:function(){},//选中触发的事件
+    data:{//附加参数
+
+    },
+    processResults:function(data){
+
+    }
+  }]
   */
 
 + function($) {
@@ -55,39 +68,37 @@
             var self = this;
 
             var currentDisplayValues = [];
+            var currentValues = [];
             var cols = [];
+            var onChange = null;
+            var cb = null;
 
             //收集cols
             var data = params.data;
-            var tmpData = data;
-            var index = 1;
-            while (tmpData && tmpData.length > 0) {
-                //console.log("tmpData:"+index);
-                var displayValues, values, cssClass = "col-" + index;
-                displayValues = tmpData.map(function(d) {
-                    return d.text;
-                });
-                values = tmpData.map(function(d) {
-                    return d.id;
-                });
-                cols.push({
-                    displayValues: displayValues,
-                    values: values,
-                    cssClass: cssClass
-                });
-                currentDisplayValues.push(tmpData[0].text);
-                tmpData = tmpData[0].nodes;//sub(tmpData[0]);
-                index++;
-            }
+            if(data){//全量数据
+                var tmpData = data;
+                var index = 1;
+                while (tmpData && tmpData.length > 0) {
+                    //console.log("tmpData:"+index);
+                    var displayValues, values, cssClass = "col-" + index;
+                    displayValues = tmpData.map(function(d) {
+                        return d.text;
+                    });
+                    values = tmpData.map(function(d) {
+                        return d.id;
+                    });
+                    cols.push({
+                        displayValues: displayValues,
+                        values: values,
+                        cssClass: cssClass
+                    });
+                    currentDisplayValues.push(tmpData[0].text);
+                    currentValues.push(tmpData[0].id);
+                    tmpData = tmpData[0].nodes;//sub(tmpData[0]);
+                    index++;
+                }
 
-            var config = {
-
-                cssClass: "city-picker",
-                rotateEffect: false, //为了性能
-                formatValue: function(p, values, displayValues) {
-                    return params.formatValue && params.formatValue(p,values,displayValues) || displayValues.join('-');
-                },
-                onChange: function(picker, values, displayValues) {
+                onChange = function(picker, values, displayValues) {
                     for (var i = 0; i < currentDisplayValues.length; i++) {
                         var currentDisplayValue = currentDisplayValues[i];
                         var newDisplayValue = picker.cols[i].displayValue;
@@ -115,8 +126,109 @@
                     if (params.onChange) {
                         params.onChange.call(self, picker, values, displayValues);
                     }
-                },
+                };
+            }else{//异步
+                params.selects.forEach(function(select,index){
+                    cols.push({
+                        displayValues:[""],
+                        values:["null"],
+                        cssClass:"col-" + index
+                    });
+                    currentDisplayValues.push('');
+                    currentValues.push('null');
+                });
 
+                onChange = function(picker,values,displayValues){
+                    console.log("async onchange");
+                    for (var i = 0; i < currentDisplayValues.length; i++) {
+                        var currentDisplayValue = currentDisplayValues[i];
+                        var newDisplayValue = picker.cols[i].displayValue;
+                        var currentValue = currentValues[i];
+                        var newValue = values[i];
+                        if (/*newDisplayValue !== currentDisplayValue*/newValue != currentValue ) {
+                            //var tmpDisplayValue = newDisplayValue;
+                            for (var j = i + 1; j < currentDisplayValues.length; j++) {
+                                var subItems = [];
+                                //getSubItems(data,tmpDisplayValue,j - 1,subItems);
+                                picker.cols[j].replaceValues(["null"], [""]);
+                                currentValues[j] = 'null';
+                                currentDisplayValues[j] = '';
+                                //currentDisplayValues[j] = tmpDisplayValue;
+                                //tmpDisplayValue = subItems[0][0].text;
+                            }
+                            currentDisplayValues[i] = newDisplayValue;
+                            currentValues[i] = newValue;
+                            
+                            //刷新数据
+                            var parentSelect = params.selects[i];
+                            var select = params.selects[i+1];
+                            if(select&&values[i]!='null'){
+                                var param = $.extend({},select.data);
+                                if(parentSelect.paramNameForNext){
+                                    param[parentSelect.paramNameForNext] = values[i];
+                                }
+                                $.ajax({
+                                    url: select.url,
+                                    data:param,
+                                    success:function(data){
+                                        data = select.processResults && select.processResults(data) || data;
+
+                                        picker.cols[i+1].replaceValues(data.map(function(d){
+                                            return d.id;
+                                        }),data.map(function(d){
+                                            return d.text;
+                                        }))
+
+                                        picker.updateValue();
+                                    }
+                                });
+                            }
+                            picker.updateValue();
+                            return false;
+                        }
+                    }
+                    
+                    //picker.updateValue();
+                    return false;
+                };
+
+                //获取第一个的数据
+                cb = function(){
+                    var param = $.extend({},params.selects[0].data);
+                    var select = params.selects[0];
+                    var picker = $(self).data('picker');
+                    $.ajax({
+                        url: params.selects[0].url,
+                        data:param,
+                        success:function(data){
+                            data = select.processResults && select.processResults(data) || data;
+
+                            picker.params.cols[0].values = data.map(function(d){
+                                return d.id;
+                            });
+                            picker.params.cols[0].displayValues = data.map(function(d){
+                                return d.text;
+                            });
+                            /*picker.cols[0].replaceValues(data.map(function(d){
+                                return d.id;
+                            }),data.map(function(d){
+                                return d.text;
+                            }))*/
+
+                            //picker.updateValue();
+                        }
+                    });
+                };
+            }
+
+            var config = {
+
+                cssClass: "city-picker",
+                rotateEffect: false, //为了性能
+                formatValue: function(p, values, displayValues) {
+                    return params.formatValue && params.formatValue(p,values,displayValues) || displayValues.join('-');
+                },
+                onChange: onChange,
                 cols: cols
             };
 
@@ -149,7 +261,10 @@
                 }                
               }
             
+                                    
             $(this).picker(p);
+
+            cb && cb();
         });
     };
 
